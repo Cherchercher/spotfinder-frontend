@@ -1,158 +1,111 @@
-import { Component } from '@angular/core';
-import { ParkingService } from '../services/parking.service';
-import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
-import { ModalFilterPage } from '../modal-filter/modal-filter.page';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import * as THREE from 'three';
 
-declare let google: any;
-
-/*
- Generated class for the LoginPage page.
-
- See http://ionicframework.com/docs/v2/components/#navigation for more info on
- Ionic pages and navigation.
- */
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.page.html',
-  styleUrls: ['./search.page.scss'],
+  selector: 'page-search',
+  templateUrl: 'search.page.html',
+  styleUrls: ['./search.page.scss']
 })
+
 export class SearchPage {
-  // show filter by types
-  public showTypes = true;
-  // Map
-  public map: any;
-  // show full map
-  public mapCenter: any;
-  // map center
-  public showFullMap = true;
-  // filter by: 0 - restaurant, 1 - hotel, 2 - attraction
-  public searchBy = 1;
-  // list of items
-  public items: any;
-  // markers
-  public markers: Array<any> = [];
+  @ViewChild('domObj', { static: false }) canvasEl: ElementRef;
+  private _ELEMENT: any;
+  private _SCENE;
+  private _CAMERA;
+  public renderer;
+  private _GEOMETRY;
+  public _MATERIAL;
 
-  constructor(
-    public router: Router,
-    public parkingService: ParkingService,
+  public _CUBE;
 
-    public modalCtrl: ModalController
-  ) {}
+  constructor() {}
 
-  ionViewDidEnter() {
-    // init map
-    this.initializeMap();
+  ionViewDidLoad(): void {
+    this.initialiseWebGLObjectAndEnvironment();
+    this.renderAnimation();
   }
 
-  initializeMap() {
-    const latLng = new google.maps.LatLng(21.0318202, 105.8495298);
 
-    const mapOptions = {
-      center: latLng,
-      zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      mapTypeControl: false,
-      zoomControl: false,
-      streetViewControl: false,
-    };
+  initialiseWebGLObjectAndEnvironment(): void {
+    // Reference the DOM element that the WebGL generated object
+    // will be assigned to
+    this._ELEMENT = this.canvasEl.nativeElement;
 
-    this.map = new google.maps.Map(
-      document.getElementById('map-search'),
-      mapOptions
+    // Define a new ThreeJS scene
+    this._SCENE = new THREE.Scene();
+
+    // Define a new ThreeJS camera from the following types:
+    /*
+         1. CubeCamera				(Creates 6 cameras - one for each face of a cube)
+         2. OrthographicCamera		(Creates a camera using orthographic projection - object size stays constant
+        							 regardless of distance from the camera)
+         3. PerspectiveCamera		(Creates a camera using perspective projection - most common projection type
+        							 for 3D rendering [designed to mimic the way the human eye sees])
+         4. StereoCamera			(Dual PerspectiveCameras - used for 3D effects such as parallax barrier)
+      */
+    this._CAMERA = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
     );
-    const options = { timeout: 120000, enableHighAccuracy: true };
 
-    // refresh map
-    this.resizeMap();
+    // Define an object to manage display of ThreeJS scene
+    this.renderer = new THREE.WebGLRenderer();
 
-    // use GPS to get center position
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.mapCenter = new google.maps.LatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-        this.map.setCenter(this.mapCenter);
-        new google.maps.Marker({
-          map: this.map,
-          position: this.map.getCenter(),
-          icon: 'http://www.robotwoods.com/dev/misc/bluecircle.png',
-        });
-      },
-      (error) => {
-        console.log(error);
-      },
-      options
-    );
-  }
+    // Resizes the output canvas to match the supplied width/height parameters
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-  // resize map
-  resizeMap() {
-    // refresh map
-    setTimeout(() => {
-      google.maps.event.trigger(this.map, 'resize');
-      this.map.setCenter(this.mapCenter);
-    }, 300);
-  }
+    // Attach the canvas, where the renderer draws the scene, to the specified DOM element
+    this._ELEMENT.appendChild(this.renderer.domElement);
 
-  // show search form
-  showForm() {
-    this.showTypes = true;
-    this.showFullMap = true;
-    this.resizeMap();
-  }
+    // BoxGeometry class allows us to create a cube (with width, height and depth dimensions supplied as
+    // parameters - default is 1 for these values)
+    this._GEOMETRY = new THREE.BoxGeometry(1, 1, 1);
 
-  // implement search
-  search(searchBy) {
-    this.showTypes = false;
-    this.showFullMap = false;
-
-    this.items = this.parkingService.getAll();
-
-    this.clearMarkers();
-    this.setMarkers();
-    this.resizeMap();
-  }
-
-  // make array with range is n
-  range(n) {
-    return new Array(Math.round(n));
-  }
-
-  // set map markers
-  setMarkers() {
-    for (const item of this.items) {
-      const location = item.location;
-      const marker = new google.maps.Marker({
-        map: this.map,
-        animation: google.maps.Animation.DROP,
-        position: new google.maps.LatLng(location.lat, location.lon),
-      });
-      this.markers.push(marker);
-    }
-  }
-
-  // clear markers
-  clearMarkers() {
-    for (const marker of this.markers) {
-      marker.setMap(null);
-    }
-
-    this.markers = [];
-  }
-
-  // show filter modal
-  async showFilter() {
-    const modal = await this.modalCtrl.create({
-      component: ModalFilterPage,
+    // Define the material (and its appearance) for drawing the geometry to the scene
+    this._MATERIAL = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      wireframe: true,
     });
-    return modal.present();
+
+    // Use the Mesh class to define a polygon mesh based object with the supplied geometry and material objects
+    this._CUBE = new THREE.Mesh(this._GEOMETRY, this._MATERIAL);
+
+    // Add the object to the scene
+    this._SCENE.add(this._CUBE);
+
+    // Define the depth position of the camera
+    this._CAMERA.position.z = 5;
   }
 
-  // view item detail
-  nagivate(id) {
-    // search by restaurant
-    this.router.navigateByUrl('/navigate/' + id);
+  /**
+   * Define the animation properties for the WebGL object rendered in the DOM element, using the requestAnimationFrame
+   * method to animate the object
+   *
+   */
+  private _animate(): void {
+    requestAnimationFrame(() => {
+      this._animate();
+    });
+
+    // Define rotation speeds on x and y axes - lower values means lower speeds
+    this._CUBE.rotation.x += 0.015;
+    this._CUBE.rotation.y += 0.015;
+
+    // Render the scene (will be called using the requestAnimationFrame method to ensure the cube is constantly animated)
+    this.renderer.render(this._SCENE, this._CAMERA);
+  }
+
+
+  renderAnimation(): void {
+    // if (Detector.webgl)
+    // {
+    this._animate();
+    /*}
+      else {
+         var warning = Detector.getWebGLErrorMessage();
+         console.log(warning);
+      }*/
   }
 }
