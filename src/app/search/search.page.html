@@ -1,0 +1,68 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title [hidden]="(searchBy != 1) || showTypes">Restaurants</ion-title>
+    <ion-title [hidden]="(searchBy != 2) || showTypes">Hotels</ion-title>
+    <ion-title [hidden]="(searchBy != 3) || showTypes">Attractions</ion-title>
+    <ion-buttons [hidden]="showTypes" slot="end">
+      <ion-button (click)="showForm()">
+        <ion-icon name="search" color="primary"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar
+    [hidden]="!showTypes"
+    placeholder="Search: City or Place"
+  ></ion-searchbar>
+</ion-header>
+
+<ion-content class="search">
+  <div class="ion-padding" [hidden]="showTypes">
+    <span>All Cuisine, Popular Near Me</span>
+    <ion-text class="pull-right" color="primary" (click)="showFilter()"
+      >Filter</ion-text
+    >
+  </div>
+
+  <!-- Show map here -->
+  <div id="map-search" [ngClass]="{'full-size': showFullMap}"></div>
+
+  <ion-list class="items" lines="full">
+    <ion-item *ngFor="let item of items" (click)="navigate(item.id)">
+      <ion-thumbnail slot="start">
+        <img src="{{ item.thumb }}" />
+      </ion-thumbnail>
+      <ion-label>
+        <span class="item-title bold">{{ item.name }}</span>
+        <div>
+          <ion-icon
+            name="star"
+            color="restaurant"
+            *ngFor="let star of range(item.rating)"
+          ></ion-icon>
+          <ion-icon
+            name="star"
+            color="medium"
+            *ngFor="let star of range(5 - item.rating)"
+          ></ion-icon>
+        </div>
+        <div>
+          <ion-text class="text-sm" color="medium"
+            >{{ item.reviews.length }} reviews</ion-text
+          >
+        </div>
+      </ion-label>
+      <ion-text class="pull-right text-sm" color="medium" slot="end"
+        >{{ item.location.distance }} km</ion-text
+      >
+    </ion-item>
+  </ion-list>
+</ion-content>

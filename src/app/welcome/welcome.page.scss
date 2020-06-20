@@ -1,0 +1,22 @@
+
+.logo {
+  height: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  ion-icon {
+    font-size: 7rem;
+    font-weight: bold;
+  }
+}
+
+ion-slides {
+  height: 50%;
+
+  ion-icon {
+    font-size: 6rem;
+  }
+}
+

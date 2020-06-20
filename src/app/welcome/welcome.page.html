@@ -1,0 +1,92 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+<ion-content class="welcome">
+  <div class="auth-bg">
+    <div class="bg-filter">
+      <!--logo-->
+      <div class="logo ion-text-center ion-padding-top">
+        <div class="inner">
+          <ion-icon name="compass-outline" color="primary"></ion-icon>
+          <ion-text color="light">
+            <h1>Spot Finder</h1>
+          </ion-text>
+        </div>
+      </div>
+
+      <!--slides-->
+      <ion-slides pager>
+        <ion-slide>
+          <div>
+            <ion-icon name="happy" color="light"></ion-icon>
+            <br />
+            <ion-text color="light">
+              The nearest parking spots at your finger tip
+            </ion-text>
+          </div>
+        </ion-slide>
+        <ion-slide>
+          <div>
+            <ion-icon name="heart" color="light"></ion-icon>
+            <br />
+            <ion-text color="light">
+              Reduce carbon emission
+            </ion-text>
+          </div>
+        </ion-slide>
+        <ion-slide>
+          <div>
+            <ion-icon name="sunny-outline" color="light"></ion-icon>
+            <br />
+            <ion-text color="light">
+              Improve parking spots data for your neighborhood
+            </ion-text>
+          </div>
+        </ion-slide>
+      </ion-slides>
+
+      <!--buttons-->
+      <div class="ion-text-center">
+        <ion-text color="light">
+          <span>Sign in with:</span>
+        </ion-text>
+      </div>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" color="fb">
+              Facebook
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button expand="block" color="gg">
+              Google
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button
+              class="button-transparent"
+              expand="block"
+              routerLink="/login"
+              >Skip</ion-button
+            >
+          </ion-col>
+          <ion-col>
+            <ion-button
+              class="button-transparent"
+              expand="block"
+              routerLink="/register"
+              >Sign Up</ion-button
+            >
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+</ion-content>

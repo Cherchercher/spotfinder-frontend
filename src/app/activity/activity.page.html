@@ -1,0 +1,79 @@
+<!--
+  Generated template for the ProfilePage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Activity</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="activity">
+  <div class="ion-padding common-bg">
+    <div
+      class="card round ion-margin-bottom"
+      *ngFor="let activity of activities"
+    >
+      <img src="{{ activity.image }}" alt="" />
+      <!--activity's info-->
+      <div>
+        <ion-list lines="none">
+          <ion-item *ngIf="activity.type === 'contribution'">
+            <ion-label>
+              <div>
+                <ion-icon name="navigate-circle" color="primary"></ion-icon>
+                {{ activity.place.name }}
+              </div>
+              <ion-text color="medium">
+                <span>{{ activity.place.address }}</span>
+              </ion-text>
+            </ion-label>
+            <ion-icon
+              name="heart"
+              class="text-2x"
+              [hidden]="!activity.is_liked"
+              (click)="toggleLike(activity)"
+              color="primary"
+              slot="end"
+            ></ion-icon>
+            <ion-icon
+              name="heart-outline"
+              class="text-2x"
+              [hidden]="activity.is_liked"
+              (click)="toggleLike(activity)"
+              color="primary"
+              slot="end"
+            ></ion-icon>
+          </ion-item>
+          <!--user info-->
+          <ion-item>
+            <ion-avatar slot="start">
+              <img src="{{ activity.user.avatar }}" alt="" />
+            </ion-avatar>
+            <ion-label>
+              <span>{{ activity.user.username }}</span>
+              <div>
+                <ion-icon
+                  name="star"
+                  color="primary"
+                  *ngFor="let start of range(activity.rating)"
+                ></ion-icon>
+              </div>
+            </ion-label>
+          </ion-item>
+
+          <ion-item class="ion-margin-bottom">
+            <ion-label class="ion-text-wrap">
+              {{ activity.content }}
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,268 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+.primary-bg {
+  background-color: var(--ion-color-primary);
+}
+
+.secondary-bg {
+  background-color: var(--ion-color-secondary);
+}
+
+.gray-bg {
+  background-color: var(--ion-color-medium);
+}
+
+.light-bg {
+  background-color: var(--ion-color-light);
+}
+
+.common-bg {
+  background-color: var(--ion-color-light);
+}
+
+.white-bg {
+  background-color: var(--ion-color-primary-contrast);
+}
+
+.restaurant-bg {
+  background-color: var(--ion-color-restaurant);
+}
+
+.hotel-bg {
+  background-color: var(--ion-color-hotel);
+}
+
+.attraction-bg {
+  background-color: var(--ion-color-attraction);
+}
+
+.padding-xs {
+  padding: 10px;
+}
+
+.round {
+  border-radius: 3px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+// text size
+.text-2x {
+  font-size: 2em;
+}
+
+.text-1x {
+  font-size: 1em;
+}
+
+.text-sm {
+  font-size: 0.7em;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+// position
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.rlt {
+  position: relative;
+}
+
+.clear {
+  clear: both;
+}
+
+.align-bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.border-bottom {
+  border-bottom: 1px solid var(--ion-color-light-shade);
+}
+
+// badge style
+ion-badge {
+  &.square {
+    border-radius: 0;
+  }
+}
+
+// card style
+.card {
+  background: #FFF;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.profile-picture {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+// transparent nav bar
+.nav-transparent {
+  --background: rgba(0, 0, 0, 0.25);
+  --ion-color-base: transparent !important;
+}
+
+// common classes
+.middle-align {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+// fix slides style
+ion-slides {
+  .swiper-pagination.hide {
+    display: block !important;
+  }
+}
+
+// button style
+.button-transparent {
+  border: 1px solid var(--ion-color-light);
+  border-radius: 4px;
+  --background: rgba(0, 0, 0, 0.1);
+
+  &.activated {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+// auth pages style
+.auth-bg {
+  width: 100%;
+  height: 100%;
+  background: url('./assets/img/bg.jpg');
+  background-size: 100% 100%;
+
+  .bg-filter {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+
+    .middle-align {
+
+      & > div {
+        width: 80%;
+      }
+
+      ion-list {
+        --ion-item-background: tra;
+
+        ion-item {
+          --background: rgba(255, 255, 255, 0.3);
+          color: var(--ion-color-primary-contrast);
+          --full-highlight-height: 0;
+        }
+      }
+    }
+  }
+}
+
+// item detail
+
+.item-detail {
+  --offset-top: 0;
+  --padding-top: 0;
+
+  .item-header {
+    height: 45%;
+
+    .inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  // social buttons styles
+  .buttons {
+
+    ion-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  // rating form
+  .rating-form {
+
+    ion-icon {
+      margin: 0.5rem;
+      font-size: 2rem;
+    }
+  }
+
+  // reviews
+  .reviews {
+
+    ion-avatar {
+      align-self: flex-start;
+    }
+  }
+
+  #map-detail {
+    width: 100%;
+    height: 150px;
+  }
+
+  // reviews and rating
+  .middle-align {
+    height: auto;
+  }
+
+  .rating-value {
+    font-size: 3rem;
+  }
+
+  .progress-bar {
+    display: inline-block;
+    height: 1rem;
+  }
+}
