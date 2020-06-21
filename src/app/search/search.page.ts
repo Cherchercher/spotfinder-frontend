@@ -1,11 +1,15 @@
 import { Component } from "@angular/core";
 import { ParkingService } from "../services/parking.service";
 import "../../../node_modules/leaflet/dist/leaflet.css";
+import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import * as Leaflet from "leaflet";
 const car1 = "assets/img/parking/car1.png";
 const car2 = "assets/img/parking/car2.png";
 const car3 = "assets/img/parking/car3.png";
+const road1 = "assets/img/parking/road1.png";
+const road2 = "assets/img/parking/road2.png";
 const parkingSign = "assets/img/parking/parking.png";
+const parkingSpot = "assets/img/parking/parkingspot.png";
 const iconRetinaUrl = "assets/marker-icon-2x.png";
 const iconUrl = "assets/marker-icon.png";
 const shadowUrl = "assets/marker-shadow.png";
@@ -39,7 +43,7 @@ export class SearchPage {
   parkingSpots = [];
   public showTypes = true;
   isMap = true;
-  constructor(public parkingService: ParkingService) {
+  constructor(public parkingService: ParkingService, private http: HttpClient) {
     this.parkingSpots = parkingService.getAll();
   }
 
@@ -56,6 +60,16 @@ export class SearchPage {
 
     this.map.fitBounds(bounds);
     this.setFakeMarkers();
+
+	this.http.get('http://localhost:5000/marker/parking-spots')
+		 .subscribe(data => {
+		   this.setFakeParkingSpotMarkers(data, this.map);
+		 });
+
+	this.http.get('http://localhost:5000/marker/roads')
+		 .subscribe(data => {
+		   this.setFakeRoadMarkers(data, this.map);
+		 });
   }
 
   setMarkers() {
@@ -66,6 +80,47 @@ export class SearchPage {
         .bindPopup(parkingSpot.name)
         .openPopup();
     }
+  }
+
+  setFakeParkingSpotMarkers(spots, map) {
+    Leaflet.Marker.prototype.options.icon = iconDefault;
+    const spot1hor = xy(40, 40);
+
+	spots.forEach(function (value) {
+		Leaflet.marker(spot1hor, {
+		icon: Leaflet.icon({
+			iconSize: value.iconSize,
+			iconAnchor: value.iconAnchor,
+			iconUrl: parkingSpot,
+		})
+		}).addTo(map);
+	});
+  }
+
+  setFakeRoadMarkers(roads, map) {
+    Leaflet.Marker.prototype.options.icon = iconDefault;
+    const road1ver = xy(40, 40);
+    const road1hor = xy(40, 40);
+
+	roads.forEach(function (value) {
+		if (value.horizontal) {
+			Leaflet.marker(road1hor, {
+			icon: Leaflet.icon({
+				iconSize: value.iconSize,
+				iconAnchor: value.iconAnchor,
+				iconUrl: road2,
+			})
+			}).addTo(map);
+		} else {
+			Leaflet.marker(road1ver, {
+			icon: Leaflet.icon({
+				iconSize: value.iconSize,
+				iconAnchor: value.iconAnchor,
+				iconUrl: road1,
+			})
+			}).addTo(map);
+       }
+	});
   }
 
   setFakeMarkers() {
