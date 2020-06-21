@@ -49,7 +49,9 @@ export class NavigatePage {
 
   navigate(path) {
 	if (path.length === 1) {
-		this.directions = "Welcome to your parking spot!"
+
+		this.directions = "Welcome to your parking spot! <br /> You have saved " + (Math.floor(Math.random() * 500) + 1)  + " g of CO2 emissions compared to an average driver!";
+
 		this.imageName = spot;
 		return;
 	}
