@@ -41,12 +41,41 @@ export class NavigatePage {
   }
 
   ionViewDidEnter() {
-    /*
-	this.http.get('http://localhost:5000/marker/roads')
+	this.http.get('http://localhost:5000/navigate/route')
 		 .subscribe(data => {
-		   this.setFakeRoadMarkers(data, this.map);
+		   this.navigate(data);
 		 });
-	*/
+  }
+
+  navigate(path) {
+	if (path.length === 1) {
+		this.directions = "Welcome to your parking spot!"
+		this.imageName = spot;
+		return;
+	}
+
+	let first_el = path[0];
+
+	let time = 2000;
+	if (first_el.move === "no") {
+		if (first_el.turn === "right") {
+			this.imageName = right;
+		} else {
+			this.imageName = left;
+		}
+		this.directions = "Turn " + first_el.turn;
+		time = 2000;
+	} else {
+		this.imageName = forward;
+		this.directions = "Move forward by " + first_el.steps * 100 + " m";
+		time = first_el.steps * 2000;
+	}
+
+	// for each path generate a message, set image and wait for a bit
+	setTimeout(() => {
+		console.log(first_el);
+		this.navigate(path.filter(obj => obj !== first_el))
+	  }, time);
   }
 
   showForm() {
