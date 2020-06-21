@@ -102,14 +102,15 @@ def get_roads():
     size = 1.0
 
     offset = [0, 0]
-
+    icon_size = [25, 41]
     roads = []
     for row_idx, row in enumerate(map):
         for col_idx, col in enumerate(row):
             if col == '-' or col == 's':
                 roads.append({
-                    'iconSize': [25, 41],
-                    'iconAnchor': [offset[0] + col_idx, offset[1] + row_idx],
+                    'iconSize': icon_size,
+                    'iconAnchor': [offset[0] + col_idx * icon_size[0],
+                        offset[1] + row_idx * icon_size[1]],
                     'iconUrl': "road1",
                 })
     return jsonify(roads)

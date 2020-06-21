@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { ParkingService } from "../services/parking.service";
 import "../../../node_modules/leaflet/dist/leaflet.css";
+import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import * as Leaflet from "leaflet";
 const car1 = "assets/img/parking/car1.png";
 const car2 = "assets/img/parking/car2.png";
@@ -40,7 +41,7 @@ export class SearchPage {
   parkingSpots = [];
   public showTypes = true;
   isMap = true;
-  constructor(public parkingService: ParkingService) {
+  constructor(public parkingService: ParkingService, private http: HttpClient) {
     this.parkingSpots = parkingService.getAll();
   }
 
@@ -57,6 +58,11 @@ export class SearchPage {
 
     this.map.fitBounds(bounds);
     this.setFakeMarkers();
+
+	this.http.get('http://localhost:5000/marker/roads')
+		 .subscribe(data => {
+		   this.setFakeRoadMarkers(data, this.map);
+		 });
   }
 
   setMarkers() {
@@ -67,6 +73,22 @@ export class SearchPage {
         .bindPopup(parkingSpot.name)
         .openPopup();
     }
+  }
+
+
+  setFakeRoadMarkers(roads, map) {
+    Leaflet.Marker.prototype.options.icon = iconDefault;
+    const road1sz = xy(40, 51);
+
+	roads.forEach(function (value) {
+		Leaflet.marker(road1sz, {
+	      icon: Leaflet.icon({
+		    iconSize: value.iconSize,
+			iconAnchor: value.iconAnchor,
+			iconUrl: road1,
+		  })
+        }).addTo(map);
+	});
   }
 
   setFakeMarkers() {
