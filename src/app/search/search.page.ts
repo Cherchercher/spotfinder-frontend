@@ -5,6 +5,7 @@ import * as Leaflet from "leaflet";
 const car1 = "assets/img/parking/car1.png";
 const car2 = "assets/img/parking/car2.png";
 const car3 = "assets/img/parking/car3.png";
+const road1 = "assets/img/parking/road1.png";
 const parkingSign = "assets/img/parking/parking.png";
 const iconRetinaUrl = "assets/marker-icon-2x.png";
 const iconUrl = "assets/marker-icon.png";

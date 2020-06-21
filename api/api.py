@@ -8,6 +8,11 @@ from flask import jsonify
 app = Flask(__name__)
 CORS(app)
 
+# TODO: eventually this would have to be stored in a proper DB
+top_left = [33.8003, -117.8827]
+city = "Los Angeles"
+state = "CA"
+country = "USA"
 
 
 @app.route('/')
@@ -71,13 +76,8 @@ def get_parking_spots():
 @app.route('/mock-micro-lot')
 def get_micro_lot():
     map = load_map("micro_lot.txt")
-    print(map)
-    top_left = [33.8003, -117.8827]
     id = 0
     size = 1.0
-    city = "Los Angeles"
-    state = "CA"
-    country = "USA"
 
     lot = []
     for row_idx, row in enumerate(map):
@@ -95,6 +95,24 @@ def get_micro_lot():
                 })
                 id += 1
     return jsonify(lot)
+
+@app.route('/marker/roads')
+def get_roads():
+    map = load_map("micro_lot.txt")
+    size = 1.0
+
+    offset = [0, 0]
+
+    roads = []
+    for row_idx, row in enumerate(map):
+        for col_idx, col in enumerate(row):
+            if col == '-' or col == 's':
+                roads.append({
+                    'iconSize': [25, 41],
+                    'iconAnchor': [offset[0] + col_idx, offset[1] + row_idx],
+                    'iconUrl': "road1",
+                })
+    return jsonify(roads)
 
 
 if __name__ == '__main__':
