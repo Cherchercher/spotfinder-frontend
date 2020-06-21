@@ -12,3 +12,9 @@ It also allows users to mark new parking spots and share their contributions and
 `npm start`
 
 Your app should now be running on [localhost:4200](http://localhost:4200/)
+
+```
+pip install -r api/requirements.txt
+cd api
+python api.py
+```
