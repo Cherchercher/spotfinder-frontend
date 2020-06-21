@@ -1,10 +1,13 @@
 import json
 from flask import Flask
 from flask_cors import CORS
+from finder import load_map
+from flask import jsonify
 
 
 app = Flask(__name__)
 CORS(app)
+
 
 
 @app.route('/')
@@ -15,7 +18,7 @@ def hello_world():
 # TODO: would be easier to just dump this to file
 @app.route('/mock-spots')
 def get_parking_spots():
-    return json.dumps([
+    return jsonify([
         {
             'id': 1,
             'name': "1",
@@ -64,6 +67,34 @@ def get_parking_spots():
     ])
 
 
+
+@app.route('/mock-micro-lot')
+def get_micro_lot():
+    map = load_map("micro_lot.txt")
+    print(map)
+    top_left = [33.8003, -117.8827]
+    id = 0
+    size = 1.0
+    city = "Los Angeles"
+    state = "CA"
+    country = "USA"
+
+    lot = []
+    for row_idx, row in enumerate(map):
+        for col_idx, col in enumerate(row):
+            if col == '#' or col == 'c':
+                lot.append({
+                    'id': id,
+                    'name': "{}".format(id),
+                    'lat': top_left[1] + size * row_idx,
+                    'lng': top_left[0] + size * col_idx,
+                    'city': city,
+                    'state': state,
+                    'country': country,
+                    'available': col == '#',
+                })
+                id += 1
+    return jsonify(lot)
 
 
 if __name__ == '__main__':
