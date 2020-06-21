@@ -26,6 +26,13 @@ const routes: Routes = [
           import('../activity/activity.module').then(
             (m) => m.ActivityPageModule
           ),
+	  },
+      {
+        path: 'navigate',
+        loadChildren: () =>
+          import('../navigate/navigate.module').then(
+            (m) => m.NavigatePageModule
+          ),
       },
       {
         path: 'my-profile',

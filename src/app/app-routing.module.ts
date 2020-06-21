@@ -52,6 +52,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('./search/search.module').then((m) => m.SearchPageModule),
   },
+
+
+  {
+    path: 'navigate',
+    loadChildren: () =>
+      import('./navigate/navigate.module').then((m) => m.NavigatePageModule),
+  },
+
   {
     path: 'setting',
     loadChildren: () =>
