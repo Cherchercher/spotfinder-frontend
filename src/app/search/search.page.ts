@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ParkingService } from "../services/parking.service";
 import "../../../node_modules/leaflet/dist/leaflet.css";
-import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from "@angular/common/http";
 import * as Leaflet from "leaflet";
 const car1 = "assets/img/parking/car1.png";
 const car2 = "assets/img/parking/car2.png";
@@ -53,23 +53,25 @@ export class SearchPage {
       minZoom: -5,
     });
 
+    this.map.createPane("carMarker");
+    this.map.getPane("carMarker").style.zIndex = 999;
+
     const bounds = [
       [0, 0],
       [1000, 1000],
     ];
 
     this.map.fitBounds(bounds);
-    this.setFakeMarkers();
 
-	this.http.get('http://localhost:5000/marker/parking-spots')
-		 .subscribe(data => {
-		   this.setFakeParkingSpotMarkers(data, this.map);
-		 });
+    this.http
+      .get("http://localhost:5000/marker/parking-spots")
+      .subscribe((data) => {
+        this.setFakeParkingSpotMarkers(data, this.map);
+      });
 
-	this.http.get('http://localhost:5000/marker/roads')
-		 .subscribe(data => {
-		   this.setFakeRoadMarkers(data, this.map);
-		 });
+    this.http.get("http://localhost:5000/marker/roads").subscribe((data) => {
+      this.setFakeRoadMarkers(data, this.map);
+    });
   }
 
   setMarkers() {
@@ -84,101 +86,47 @@ export class SearchPage {
 
   setFakeParkingSpotMarkers(spots, map) {
     Leaflet.Marker.prototype.options.icon = iconDefault;
-    const spot1hor = xy(40, 40);
 
-	spots.forEach(function (value) {
-		Leaflet.marker(spot1hor, {
-		icon: Leaflet.icon({
-			iconSize: value.iconSize,
-			iconAnchor: value.iconAnchor,
-			iconUrl: parkingSpot,
-		})
-		}).addTo(map);
-	});
+    spots.forEach(function (value) {
+      if (value.iconUrl === "parkingSpot1") {
+        Leaflet.marker([value.iconAnchor[0], value.iconAnchor[1]], {
+          icon: Leaflet.icon({
+            iconSize: value.iconSize,
+            iconUrl: parkingSpot,
+          }),
+        }).addTo(map);
+      } else {
+        Leaflet.marker([value.iconAnchor[0], value.iconAnchor[1]], {
+          icon: Leaflet.icon({
+            iconSize: [30, 40],
+            iconUrl: car1,
+          }),
+          zIndexOffset: 1000,
+        }).addTo(map);
+      }
+    });
   }
 
   setFakeRoadMarkers(roads, map) {
     Leaflet.Marker.prototype.options.icon = iconDefault;
-    const road1ver = xy(40, 40);
-    const road1hor = xy(40, 40);
 
-	roads.forEach(function (value) {
-		if (value.horizontal) {
-			Leaflet.marker(road1hor, {
-			icon: Leaflet.icon({
-				iconSize: value.iconSize,
-				iconAnchor: value.iconAnchor,
-				iconUrl: road2,
-			})
-			}).addTo(map);
-		} else {
-			Leaflet.marker(road1ver, {
-			icon: Leaflet.icon({
-				iconSize: value.iconSize,
-				iconAnchor: value.iconAnchor,
-				iconUrl: road1,
-			})
-			}).addTo(map);
-       }
-	});
-  }
-
-  setFakeMarkers() {
-    Leaflet.Marker.prototype.options.icon = iconDefault;
-    const sol = xy(175, 145);
-    const mizar = xy(41.6, 130.1);
-    const kruegerZ = xy(13.4, 56.5);
-    const deneb = xy(218, 8);
-    const sol2 = xy(275, 145);
-
-    Leaflet.marker(sol, {
-      icon: Leaflet.icon({
-        iconSize: [25, 41],
-        iconAnchor: [13, 41],
-        iconUrl: car1,
-      }),
-    })
-      .addTo(this.map)
-      .bindPopup("Sol");
-    Leaflet.marker(mizar, {
-      icon: Leaflet.icon({
-        iconSize: [25, 41],
-        iconAnchor: [13, 41],
-        iconUrl: car2,
-      }),
-    })
-      .addTo(this.map)
-      .bindPopup("Mizar");
-    Leaflet.marker(kruegerZ, {
-      icon: Leaflet.icon({
-        iconSize: [25, 41],
-        iconAnchor: [13, 41],
-        iconUrl: car3,
-      }),
-    })
-      .addTo(this.map)
-      .bindPopup("Krueger-Z");
-    Leaflet.marker(deneb, {
-      icon: Leaflet.icon({
-        iconSize: [25, 41],
-        iconAnchor: [13, 41],
-        iconUrl: parkingSign,
-      }),
-    })
-      .addTo(this.map)
-      .bindPopup("Deneb");
-
-    Leaflet.marker(sol2, {
-      icon: Leaflet.icon({
-        iconSize: [25, 41],
-        iconAnchor: [13, 41],
-        iconUrl: car1,
-      }),
-    })
-      .addTo(this.map)
-      .bindPopup("Sol 2");
-
-    Leaflet.polyline([sol, deneb]).addTo(this.map);
+    roads.forEach(function (value) {
+      if (value.horizontal) {
+        Leaflet.marker(xy(value.iconAnchor[0], value.iconAnchor[1]), {
+          icon: Leaflet.icon({
+            iconSize: value.iconSize,
+            iconUrl: road2,
+          }),
+        }).addTo(map);
+      } else {
+        Leaflet.marker(xy(value.iconAnchor[0], value.iconAnchor[1]), {
+          icon: Leaflet.icon({
+            iconSize: value.iconSize,
+            iconUrl: road1,
+          }),
+        }).addTo(map);
+      }
+    });
   }
 
   showForm() {
