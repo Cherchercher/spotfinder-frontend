@@ -1,7 +1,7 @@
 import json
 from flask import Flask
 from flask_cors import CORS
-from finder import load_map, is_horizontal
+from finder import load_map, is_horizontal, select_starting_point
 from flask import jsonify
 
 
@@ -121,20 +121,28 @@ def get_roads():
 def get_microlot_parking_spots():
     map = load_map("micro_lot.txt")
     size = 1.0
-
     offset = [0, 0]
     icon_size = [40, 40]
     roads = []
     for row_idx, row in enumerate(map):
         for col_idx, col in enumerate(row):
-            if col == '#':
+          if col == "#":
                 roads.append({
                     'iconSize': icon_size,
                     'iconAnchor': [offset[0] + col_idx * icon_size[0],
                         offset[1] + row_idx * icon_size[1]],
                     'iconUrl': "parkingSpot1",
                 })
+    [row_idx, col_idx] = select_starting_point(map) 
+    roads.append({
+        'iconSize': icon_size,
+        'iconAnchor': [offset[0] + col_idx * icon_size[0],
+            offset[1] + row_idx * icon_size[1]],
+        'iconUrl': "car1",
+        'horizontal': is_horizontal([row_idx, col_idx], map)
+    })
     return jsonify(roads)
+
 
 
 if __name__ == '__main__':
