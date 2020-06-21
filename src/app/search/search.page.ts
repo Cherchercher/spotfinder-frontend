@@ -6,7 +6,6 @@ import * as Leaflet from "leaflet";
 const car1 = "assets/img/parking/car1.png";
 const road1 = "assets/img/parking/road1.png";
 const road2 = "assets/img/parking/road2.png";
-const parkingSign = "assets/img/parking/parking.png";
 const parkingSpot = "assets/img/parking/parkingspot.png";
 const iconRetinaUrl = "assets/marker-icon-2x.png";
 const iconUrl = "assets/marker-icon.png";
@@ -41,6 +40,8 @@ export class SearchPage {
   parkingSpots = [];
   public showTypes = true;
   isMap = true;
+  marker: Leaflet.Marker;
+  target = null;
   constructor(public parkingService: ParkingService, private http: HttpClient) {
     this.parkingSpots = parkingService.getAll();
   }
@@ -69,6 +70,12 @@ export class SearchPage {
     });
   }
 
+  onClickParkingSpot = (e) => {
+    this.target = [e.latlng.lat, e.latlng.lng];
+    const newLatLng = yx(e.latlng.lat, e.latlng.lng);
+    this.marker.setLatLng(newLatLng);
+  };
+
   setMarkers() {
     Leaflet.Marker.prototype.options.icon = iconDefault;
     for (const parkingSpot of this.parkingSpots) {
@@ -81,23 +88,28 @@ export class SearchPage {
 
   setFakeParkingSpotMarkers(spots, map) {
     Leaflet.Marker.prototype.options.icon = iconDefault;
-
-    spots.forEach(function (value) {
+    let classObj = this;
+    spots.forEach((value) => {
       if (value.iconUrl === "parkingSpot1") {
         Leaflet.marker([value.iconAnchor[0], value.iconAnchor[1]], {
           icon: Leaflet.icon({
             iconSize: value.iconSize,
             iconUrl: parkingSpot,
           }),
-        }).addTo(map);
+        })
+          .addTo(map)
+          .on("click", classObj.onClickParkingSpot);
       } else {
-        Leaflet.marker([value.iconAnchor[0], value.iconAnchor[1]], {
-          icon: Leaflet.icon({
-            iconSize: [30, 40],
-            iconUrl: car1,
-          }),
-          zIndexOffset: 1000,
-        }).addTo(map);
+        classObj.marker = Leaflet.marker(
+          [value.iconAnchor[0], value.iconAnchor[1]],
+          {
+            icon: Leaflet.icon({
+              iconSize: [30, 40],
+              iconUrl: car1,
+            }),
+            zIndexOffset: 1000,
+          }
+        ).addTo(map);
       }
     });
   }
@@ -105,7 +117,7 @@ export class SearchPage {
   setFakeRoadMarkers(roads, map) {
     Leaflet.Marker.prototype.options.icon = iconDefault;
 
-    roads.forEach(function (value) {
+    roads.forEach((value) => {
       if (value.horizontal) {
         Leaflet.marker(xy(value.iconAnchor[0], value.iconAnchor[1]), {
           icon: Leaflet.icon({
