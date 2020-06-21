@@ -117,5 +117,25 @@ def get_roads():
     return jsonify(roads)
 
 
+@app.route('/marker/parking-spots')
+def get_microlot_parking_spots():
+    map = load_map("micro_lot.txt")
+    size = 1.0
+
+    offset = [0, 0]
+    icon_size = [40, 40]
+    roads = []
+    for row_idx, row in enumerate(map):
+        for col_idx, col in enumerate(row):
+            if col == '#':
+                roads.append({
+                    'iconSize': icon_size,
+                    'iconAnchor': [offset[0] + col_idx * icon_size[0],
+                        offset[1] + row_idx * icon_size[1]],
+                    'iconUrl': "parkingSpot1",
+                })
+    return jsonify(roads)
+
+
 if __name__ == '__main__':
     app.run()
