@@ -1,19 +1,31 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-buttons [hidden]="showTypes" slot="end">
-      <ion-button (click)="showForm()">
-        <ion-icon name="search" color="primary"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-  <ion-searchbar
-    [hidden]="!showTypes"
-    placeholder="Search by Address or Place"
-  ></ion-searchbar>
-</ion-header>
-<ion-content [fullscreen]="true">
+<ion-content class="ion-padding-bottom home common-bg">
+  <div class="header rlt">
+    <div class="align-bottom ion-padding">
+      <div class="pull-left">
+        <ion-text color="light">
+          <h2>
+            <ion-icon name="navigate-outline"></ion-icon>
+            Nearest parking spot
+          </h2>
+        </ion-text>
+        <ion-text color="light">
+          <span>Click on an available spot to get started </span>
+        </ion-text>
+      </div>
+
+      <div class="clear"></div>
+    </div>
+  </div>
+
+  <!--float search bar-->
+  <div class="float-search ion-padding">
+    <ion-input class="card round" placeholder="Search"></ion-input>
+    <ion-menu-toggle [autoHide]="false">
+      <div class="menu-btn">
+        <ion-icon name="menu" color="primary"></ion-icon>
+      </div>
+    </ion-menu-toggle>
+  </div>
+
   <div id="mapParking" style="width: 100%; height: 100%;"></div>
 </ion-content>
