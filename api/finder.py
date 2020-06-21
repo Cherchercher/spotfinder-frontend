@@ -156,9 +156,11 @@ def create_driver_instructions(path):
 
             movements.append({
                 "move": "forward",
+                "turn": "no",
                 "steps": steps
             })
             movements.append({
+                "move": "no",
                 "turn": turn,
                 "steps": 0
             })

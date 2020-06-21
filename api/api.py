@@ -1,7 +1,7 @@
 import json
 from flask import Flask
 from flask_cors import CORS
-from finder import load_map, is_horizontal, select_starting_point
+from finder import load_map, is_horizontal, find_space_for_driver, fill_lot, select_starting_point
 from flask import jsonify
 
 
@@ -133,7 +133,7 @@ def get_microlot_parking_spots():
                         offset[1] + row_idx * icon_size[1]],
                     'iconUrl': "parkingSpot1",
                 })
-    [row_idx, col_idx] = select_starting_point(map) 
+    [row_idx, col_idx] = select_starting_point(map)
     roads.append({
         'iconSize': icon_size,
         'iconAnchor': [offset[0] + col_idx * icon_size[0],
@@ -143,6 +143,16 @@ def get_microlot_parking_spots():
     })
     return jsonify(roads)
 
+
+@app.route('/navigate/route')
+def get_route_to_closest_parking_space():
+    """Generate a route to a free parking spot
+    """
+    map = load_map("micro_lot.txt")
+    # fill lot
+    lot = fill_lot(map, 35)
+    new_lot, instructions = find_space_for_driver(lot)
+    return jsonify(instructions)
 
 
 if __name__ == '__main__':
