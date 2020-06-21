@@ -1,158 +1,78 @@
 import { Component } from '@angular/core';
 import { ParkingService } from '../services/parking.service';
-import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
-import { ModalFilterPage } from '../modal-filter/modal-filter.page';
+import '../../../node_modules/leaflet/dist/leaflet.css';
+import * as Leaflet from 'leaflet';
+const iconRetinaUrl = 'assets/marker-icon-2x.png';
+const iconUrl = 'assets/marker-icon.png';
+const shadowUrl = 'assets/marker-shadow.png';
+const iconDefault = Leaflet.icon({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41],
+});
 
-declare let google: any;
-
-/*
- Generated class for the LoginPage page.
-
- See http://ionicframework.com/docs/v2/components/#navigation for more info on
- Ionic pages and navigation.
- */
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.page.html',
+  selector: 'page-search',
+  templateUrl: 'search.page.html',
   styleUrls: ['./search.page.scss'],
 })
 export class SearchPage {
-  // show filter by types
+  map: Leaflet.Map;
+  parkingSpots = [];
   public showTypes = true;
-  // Map
-  public map: any;
-  // show full map
-  public mapCenter: any;
-  // map center
-  public showFullMap = true;
-  // filter by: 0 - restaurant, 1 - hotel, 2 - attraction
-  public searchBy = 1;
-  // list of items
-  public items: any;
-  // markers
-  public markers: Array<any> = [];
-
-  constructor(
-    public router: Router,
-    public parkingService: ParkingService,
-
-    public modalCtrl: ModalController
-  ) {}
+  isMap = true;
+  constructor(public parkingService: ParkingService) {
+    this.parkingSpots = parkingService.getAll();
+  }
 
   ionViewDidEnter() {
-    // init map
-    this.initializeMap();
+    this.map = new Leaflet.Map('mapParking').setView([33.8003, -117.8827], 16);
+
+    Leaflet.tileLayer(
+      'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+      {
+        attribution: 'goplanatrip.com',
+      }
+    ).addTo(this.map);
+
+    this.setMarkers();
   }
 
-  initializeMap() {
-    const latLng = new google.maps.LatLng(21.0318202, 105.8495298);
-
-    const mapOptions = {
-      center: latLng,
-      zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      mapTypeControl: false,
-      zoomControl: false,
-      streetViewControl: false,
-    };
-
-    this.map = new google.maps.Map(
-      document.getElementById('map-search'),
-      mapOptions
-    );
-    const options = { timeout: 120000, enableHighAccuracy: true };
-
-    // refresh map
-    this.resizeMap();
-
-    // use GPS to get center position
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.mapCenter = new google.maps.LatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-        this.map.setCenter(this.mapCenter);
-        new google.maps.Marker({
-          map: this.map,
-          position: this.map.getCenter(),
-          icon: 'http://www.robotwoods.com/dev/misc/bluecircle.png',
-        });
-      },
-      (error) => {
-        console.log(error);
-      },
-      options
-    );
+  setMarkers() {
+    Leaflet.Marker.prototype.options.icon = iconDefault;
+    for (const parkingSpot of this.parkingSpots) {
+      Leaflet.marker([parkingSpot.lat, parkingSpot.lng])
+        .addTo(this.map)
+        .bindPopup(parkingSpot.name)
+        .openPopup();
+    }
   }
 
-  // resize map
-  resizeMap() {
-    // refresh map
-    setTimeout(() => {
-      google.maps.event.trigger(this.map, 'resize');
-      this.map.setCenter(this.mapCenter);
-    }, 300);
-  }
-
-  // show search form
   showForm() {
     this.showTypes = true;
-    this.showFullMap = true;
-    this.resizeMap();
   }
 
-  // implement search
-  search(searchBy) {
-    this.showTypes = false;
-    this.showFullMap = false;
-
-    this.items = this.parkingService.getAll();
-
-    this.clearMarkers();
-    this.setMarkers();
-    this.resizeMap();
-  }
-
-  // make array with range is n
-  range(n) {
-    return new Array(Math.round(n));
-  }
-
-  // set map markers
-  setMarkers() {
-    for (const item of this.items) {
-      const location = item.location;
-      const marker = new google.maps.Marker({
-        map: this.map,
-        animation: google.maps.Animation.DROP,
-        position: new google.maps.LatLng(location.lat, location.lon),
-      });
-      this.markers.push(marker);
-    }
-  }
-
-  // clear markers
   clearMarkers() {
-    for (const marker of this.markers) {
-      marker.setMap(null);
+    if (this.isMap === true) {
+      {
+        // For each layer on the map remove everything and clear variables
+        this.map.eachLayer(function(layer) {
+          this.map.remove();
+          this.map.removeLayer(layer);
+          Leaflet.PointManager.deletePoints(); // clear the pointManager array of points
+          this.isMap = false;
+        });
+        this.parkingSpots = [];
+      }
     }
-
-    this.markers = [];
   }
 
-  // show filter modal
-  async showFilter() {
-    const modal = await this.modalCtrl.create({
-      component: ModalFilterPage,
-    });
-    return modal.present();
-  }
-
-  // view item detail
-  nagivate(id) {
-    // search by restaurant
-    this.router.navigateByUrl('/navigate/' + id);
+  ionViewWillLeave() {
+    this.map.remove();
   }
 }
