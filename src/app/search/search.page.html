@@ -1,11 +1,20 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Three JS rotating cube
-    </ion-title>
-  </ion-navbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons [hidden]="showTypes" slot="end">
+      <ion-button (click)="showForm()">
+        <ion-icon name="search" color="primary"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar
+    [hidden]="!showTypes"
+    placeholder="Search by Address or Place"
+  ></ion-searchbar>
 </ion-header>
 
 <ion-content padding>
-  <div #domObj></div>
+  <canvas #rendererCanvas id="renderCanvas"></canvas>
 </ion-content>
