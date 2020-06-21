@@ -4,8 +4,6 @@ import "../../../node_modules/leaflet/dist/leaflet.css";
 import { HttpClient } from "@angular/common/http";
 import * as Leaflet from "leaflet";
 const car1 = "assets/img/parking/car1.png";
-const car2 = "assets/img/parking/car2.png";
-const car3 = "assets/img/parking/car3.png";
 const road1 = "assets/img/parking/road1.png";
 const road2 = "assets/img/parking/road2.png";
 const parkingSign = "assets/img/parking/parking.png";
@@ -52,9 +50,6 @@ export class SearchPage {
       crs: Leaflet.CRS.Simple,
       minZoom: -5,
     });
-
-    this.map.createPane("carMarker");
-    this.map.getPane("carMarker").style.zIndex = 999;
 
     const bounds = [
       [0, 0],
