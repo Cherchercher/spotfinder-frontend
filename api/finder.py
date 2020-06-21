@@ -42,6 +42,16 @@ def load_map(path):
         return None
 
 
+def is_horizontal(loc, map):
+    prev_loc = [loc[0], loc[1]-1]
+    next_loc = [loc[0], loc[1]+1]
+    if is_valid(prev_loc, map) and map[prev_loc[0]][prev_loc[1]] in ('c', '-') \
+        or is_valid(next_loc, map) and map[next_loc[0]][next_loc[1]] in ('c', '-'):
+        return True
+    else:
+        return False
+
+
 def fill_lot(map, count_cars):
     total_spots = 0
     for row in map:

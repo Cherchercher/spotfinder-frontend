@@ -1,7 +1,7 @@
 import json
 from flask import Flask
 from flask_cors import CORS
-from finder import load_map
+from finder import load_map, is_horizontal
 from flask import jsonify
 
 
@@ -102,7 +102,7 @@ def get_roads():
     size = 1.0
 
     offset = [0, 0]
-    icon_size = [25, 41]
+    icon_size = [40, 40]
     roads = []
     for row_idx, row in enumerate(map):
         for col_idx, col in enumerate(row):
@@ -112,6 +112,7 @@ def get_roads():
                     'iconAnchor': [offset[0] + col_idx * icon_size[0],
                         offset[1] + row_idx * icon_size[1]],
                     'iconUrl': "road1",
+                    'horizontal': is_horizontal([row_idx, col_idx], map)
                 })
     return jsonify(roads)
 
